@@ -32,21 +32,21 @@ To install with pywin32 or pyobjc required specify the extra `nativeLib`:
 
 or download the source from https://github.com/arsenetar/send2trash and install it with:
 
-    >>> python -m pip install -e .
+    python -m pip install -e .
 
 On systems where Python enforces PEP 668 (e.g., recent Linux distributions),
 installing packages into the system Python may be restricted.
 Use a virtual environment:
 
-    >>> python -m venv .venv
+    python -m venv .venv
 
     GNU/Linux / macOS:
 
-        >>> source .venv/bin/activate
+        source .venv/bin/activate
 
     Windows:
 
-        >>> .venv\Scripts\activate
+        .venv\Scripts\activate
 
 Usage
 -----
