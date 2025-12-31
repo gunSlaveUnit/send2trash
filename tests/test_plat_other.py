@@ -163,7 +163,7 @@ def test_trash_topdir(gen_ext_vol):
 
     s2t(gen_ext_vol[2])
     assert op.exists(gen_ext_vol[2]) is False
-    
+
     if sys.platform == "darwin":
         # On macOS, we can only verify the file was removed from original location
         pass
@@ -181,7 +181,7 @@ def test_trash_topdir(gen_ext_vol):
             )
             is True
         )
-        
+
         cfg = ConfigParser()
         cfg.read(op.join(trash_dir, str(os.getuid()), "info", gen_ext_vol[1] + INFO_SUFFIX))
         assert (gen_ext_vol[1] == cfg.get("Trash Info", "Path", raw=True)) is True
