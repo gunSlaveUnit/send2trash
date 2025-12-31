@@ -19,5 +19,5 @@ def send2trash(paths):
             if e.code == Gio.IOErrorEnum.NOT_SUPPORTED:
                 # We get here if we can't create a trash directory on the same
                 # device. I don't know if other errors can result in NOT_SUPPORTED.
-                raise TrashPermissionError("")
-            raise OSError(e.message)
+                raise TrashPermissionError("") from e
+            raise OSError(e.message) from e
