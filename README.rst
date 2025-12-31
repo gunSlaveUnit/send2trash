@@ -11,7 +11,7 @@ the `trash specifications from freedesktop.org`_.
 
 ``ctypes`` is used to access native libraries, so no compilation is necessary.
 
-Send2Trash supports Python 2.7 and up (Python 3 is supported).
+Send2Trash supports Python 3 (versions before 2.x support Python 2).
 
 Status: Additional Help Welcome
 -------------------------------
@@ -58,7 +58,7 @@ Usage
 On Freedesktop platforms (Linux, BSD, etc.), you may not be able to efficiently
 trash some files. In these cases, an exception ``send2trash.TrashPermissionError``
 is raised, so that the application can handle this case. This inherits from
-``PermissionError`` (``OSError`` on Python 2). Specifically, this affects
+``PermissionError``. Specifically, this affects
 files on a different device to the user's home directory, where the root of the
 device does not have a ``.Trash`` directory, and we don't have permission to
 create a ``.Trash-$UID`` directory.

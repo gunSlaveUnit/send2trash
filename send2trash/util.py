@@ -5,6 +5,7 @@
 # which should be included with this package. The terms are also available at
 # http://www.hardcoded.net/licenses/bsd_license
 
+import os
 import collections.abc
 
 
@@ -14,5 +15,4 @@ def preprocess_paths(paths):
     elif not isinstance(paths, list):
         paths = [paths]
     # Convert items such as pathlib paths to strings
-    paths = [path.__fspath__() if hasattr(path, "__fspath__") else path for path in paths]
-    return paths
+    return [os.fspath(path) for path in paths]

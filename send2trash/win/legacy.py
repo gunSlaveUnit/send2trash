@@ -6,9 +6,6 @@
 
 from __future__ import unicode_literals
 import os.path as op
-
-from send2trash.util import preprocess_paths
-
 from ctypes import (
     windll,
     Structure,
@@ -20,6 +17,8 @@ from ctypes import (
     FormatError,
 )
 from ctypes.wintypes import HWND, UINT, LPCWSTR, BOOL
+
+from send2trash.util import preprocess_paths
 
 kernel32 = windll.kernel32
 GetShortPathNameW = kernel32.GetShortPathNameW

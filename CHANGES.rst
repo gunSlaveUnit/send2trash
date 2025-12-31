@@ -1,5 +1,11 @@
 Changes
 =======
+Version 2.0.0 -- 2025/12/30
+---------------------------
+* Drop suport for Python 2
+* Fix `test_trash_topdir` failing on macOS by @denini08 in https://github.com/arsenetar/send2trash/pull/100
+* Update source installation instructions by @gunSlaveUnit in https://github.com/arsenetar/send2trash/pull/102
+* Update gio implemenation, should fix #5 by no longer using deprecated GObject.GError
 
 Version 1.8.3 -- 2024/04/06
 ---------------------------

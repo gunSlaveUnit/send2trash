@@ -6,11 +6,11 @@
 
 from __future__ import unicode_literals
 import os.path as op
-from send2trash.util import preprocess_paths
 from platform import version
 import pythoncom
 import pywintypes
 from win32com.shell import shell, shellcon
+from send2trash.util import preprocess_paths
 from send2trash.win.IFileOperationProgressSink import create_sink
 
 
@@ -59,7 +59,7 @@ def send2trash(paths):
     except pywintypes.com_error as error:
         # convert to standard OS error, allows other code to get a
         # normal errno
-        raise OSError(None, error.strerror, path, error.hresult)
+        raise OSError(None, error.strerror, path, error.hresult) from error
     finally:
         # Need to make sure we call this once fore every init
         pythoncom.CoUninitialize()
