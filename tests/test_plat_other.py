@@ -1,82 +1,62 @@
 # encoding: utf-8
-import pytest
 import codecs
 import os
 import sys
 from os import path as op
-from send2trash import TrashPermissionError
-
-try:
-    from configparser import ConfigParser
-except ImportError:
-    # py2
-    from ConfigParser import ConfigParser  # noqa: F401
-
 from tempfile import mkdtemp, NamedTemporaryFile
 import shutil
 import stat
 import uuid
+from configparser import ConfigParser
+import pytest
+from send2trash import TrashPermissionError
 
-if sys.platform != "win32":
+if sys.platform == "win32":
+    pytest.skip("Skipping non-windows tests", allow_module_level=True)
+else:
     import send2trash.plat_other
     from send2trash.plat_other import send2trash as s2t
+    from send2trash.plat_other import is_parent
 
-    INFO_SUFFIX = send2trash.plat_other.INFO_SUFFIX.decode()
-    HOMETRASH = send2trash.plat_other.HOMETRASH
-else:
-    pytest.skip("Skipping non-windows tests", allow_module_level=True)
-
-
-@pytest.fixture
-def testfile():
-    file = NamedTemporaryFile(dir=op.expanduser("~"), prefix="send2trash_test", delete=False)
-    file.close()
-    assert op.exists(file.name) is True
-    yield file
-    # Cleanup trash files on supported platforms
-    if sys.platform != "win32":
-        name = op.basename(file.name)
-        # Remove trash files if they exist
-        if op.exists(op.join(HOMETRASH, "files", name)):
-            os.remove(op.join(HOMETRASH, "files", name))
-            os.remove(op.join(HOMETRASH, "info", name + INFO_SUFFIX))
-    if op.exists(file.name):
-        os.remove(file.name)
+INFO_SUFFIX = send2trash.plat_other.INFO_SUFFIX.decode()
+HOMETRASH = send2trash.plat_other.HOMETRASH
 
 
-@pytest.fixture
-def testfiles():
+@pytest.fixture(name="test_files")
+def fixture_test_files():
     files = list(
         map(
             lambda index: NamedTemporaryFile(
                 dir=op.expanduser("~"),
-                prefix="send2trash_test{}".format(index),
+                prefix=f"send2trash_test{index}",
                 delete=False,
             ),
             range(10),
         )
     )
-    [file.close() for file in files]
-    assert all([op.exists(file.name) for file in files]) is True
+    for file in files:
+        file.close()
+    assert all(op.exists(file.name) for file in files) is True
     yield files
     filenames = [op.basename(file.name) for file in files]
-    [os.remove(op.join(HOMETRASH, "files", filename)) for filename in filenames]
-    [os.remove(op.join(HOMETRASH, "info", filename + INFO_SUFFIX)) for filename in filenames]
+    for filename in filenames:
+        os.remove(op.join(HOMETRASH, "files", filename))
+        os.remove(op.join(HOMETRASH, "info", filename + INFO_SUFFIX))
 
 
-def test_trash(testfile):
-    s2t(testfile.name)
-    assert op.exists(testfile.name) is False
+def test_trash(test_file):
+    s2t(test_file)
+    assert op.exists(test_file) is False
 
 
-def test_multitrash(testfiles):
-    filenames = [file.name for file in testfiles]
-    s2t(filenames)
-    assert any([op.exists(filename) for filename in filenames]) is False
+def test_multitrash(test_files):
+    file_names = [file.name for file in test_files]
+    s2t(file_names)
+    assert any(op.exists(filename) for filename in file_names) is False
 
 
 def touch(path):
-    with open(path, "a"):
+    with open(path, "a", encoding="utf-8"):
         os.utime(path, None)
 
 
@@ -86,8 +66,8 @@ def _filesys_enc():
     return codecs.lookup(enc).name
 
 
-@pytest.fixture
-def gen_unicode_file():
+@pytest.fixture(name="gen_unicode_file")
+def fixture_gen_unicode_file():
     name = "send2trash_tést1"
     file = op.join(op.expanduser(b"~"), name.encode("utf-8"))
     touch(file)
@@ -119,8 +99,6 @@ class ExtVol:
         self.trash_topdir_b = os.fsencode(self.trash_topdir)
 
         def s_getdev(path):
-            from send2trash.plat_other import is_parent
-
             st = os.lstat(path)
             if is_parent(self.trash_topdir, path):
                 return "dev"
@@ -145,8 +123,8 @@ class ExtVol:
         shutil.rmtree(self.trash_topdir)
 
 
-@pytest.fixture
-def gen_ext_vol():
+@pytest.fixture(name="gen_ext_vol")
+def fixture_gen_ext_vol():
     trash_topdir = mkdtemp(prefix="s2t")
     volume = ExtVol(trash_topdir)
     file_name = "test.txt"
