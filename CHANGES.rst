@@ -1,5 +1,11 @@
 Changes
 =======
+Version 2.1.0 -- 2026/01/14
+---------------------------
+* Add `conftest.py` to source distribution by @mgorny in https://github.com/arsenetar/send2trash/pull/106
+* Replacing elif, which is always True, with else by @PalmtopTiger in https://github.com/arsenetar/send2trash/pull/104
+* Migrate to pyproject.toml from setup.cfg
+
 Version 2.0.0 -- 2025/12/30
 ---------------------------
 * Drop suport for Python 2
